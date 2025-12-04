@@ -140,6 +140,27 @@ class FraudPredictor:
             # Calculate vulnerability score
             vulnerability_score = self.calculate_vulnerability_score(transaction_data)
             
+            # Detect specific patterns
+            rapid_switching_detected, rapid_switching_score, rapid_switching_details = self.detect_rapid_switching(transaction_data)
+            vulnerable_night_detected, vulnerable_night_score, vulnerable_night_details = self.detect_vulnerable_user_night(transaction_data)
+            
+            # Collect pattern alerts
+            pattern_alerts = []
+            if rapid_switching_detected:
+                pattern_alerts.append({
+                    'pattern': 'rapid_switching',
+                    'severity': 'HIGH' if rapid_switching_score >= 70 else 'MEDIUM',
+                    'score': rapid_switching_score,
+                    'details': rapid_switching_details
+                })
+            if vulnerable_night_detected:
+                pattern_alerts.append({
+                    'pattern': 'vulnerable_user_night',
+                    'severity': 'CRITICAL' if vulnerable_night_score >= 80 else 'HIGH',
+                    'score': vulnerable_night_score,
+                    'details': vulnerable_night_details
+                })
+            
             # Get balance changes
             balance_change = {
                 'payee_before': transaction_data.get('payee_balance_before', 0),
@@ -159,6 +180,7 @@ class FraudPredictor:
                 'explanation': explanation,
                 'fraud_type': fraud_type,
                 'vulnerability_score': vulnerability_score,
+                'pattern_alerts': pattern_alerts,
                 'balance_changes': balance_change,
                 'location': transaction_data.get('location', 'Unknown'),
                 'device_id': transaction_data.get('device_id', 'Unknown')
@@ -243,6 +265,107 @@ class FraudPredictor:
         }
         
         return max(scores, key=scores.get)
+    
+    def detect_rapid_switching(self, transaction_data):
+        """
+        Detect rapid beneficiary switching pattern
+        Returns: (is_detected: bool, risk_score: int, details: str)
+        """
+        beneficiary_velocity = transaction_data.get('beneficiary_change_velocity', 0)
+        is_new_beneficiary = transaction_data.get('is_new_beneficiary', 0)
+        trust_score = transaction_data.get('beneficiary_trust_score', 1.0)
+        
+        risk_score = 0
+        details = []
+        
+        # Check velocity threshold
+        if beneficiary_velocity > 5:
+            risk_score += 40
+            details.append(f"High velocity: {beneficiary_velocity} beneficiary changes")
+        elif beneficiary_velocity > 3:
+            risk_score += 20
+            details.append(f"Moderate velocity: {beneficiary_velocity} beneficiary changes")
+        
+        # Check if current is new beneficiary
+        if is_new_beneficiary == 1:
+            risk_score += 25
+            details.append("Current transaction to new beneficiary")
+        
+        # Check trust score
+        if trust_score < 0.3:
+            risk_score += 35
+            details.append(f"Very low trust score: {trust_score:.2f}")
+        elif trust_score < 0.5:
+            risk_score += 20
+            details.append(f"Low trust score: {trust_score:.2f}")
+        
+        # Pattern detected if risk_score >= 50
+        is_detected = risk_score >= 50
+        
+        if is_detected:
+            return True, risk_score, " | ".join(details)
+        else:
+            return False, risk_score, "No rapid switching pattern detected"
+    
+    def detect_vulnerable_user_night(self, transaction_data):
+        """
+        Detect vulnerable user (rural/first-time) making night transactions
+        Returns: (is_detected: bool, risk_score: int, details: str)
+        """
+        is_rural = transaction_data.get('is_rural_user', 0)
+        is_first_time = transaction_data.get('is_first_time_user', 0)
+        account_age = transaction_data.get('account_age_days', 999)
+        time_slot = transaction_data.get('time_slot', 0)
+        amount = transaction_data.get('amount', 0)
+        
+        risk_score = 0
+        details = []
+        vulnerability_factors = []
+        
+        # Check user vulnerability
+        if is_rural == 1:
+            risk_score += 25
+            vulnerability_factors.append("Rural user (low digital literacy)")
+        
+        if is_first_time == 1 or account_age < 30:
+            risk_score += 30
+            vulnerability_factors.append(f"New user (account age: {account_age} days)")
+        elif account_age < 90:
+            risk_score += 15
+            vulnerability_factors.append(f"Recent user (account age: {account_age} days)")
+        
+        # Check time slot (Night = 3, Late Night = 4)
+        if time_slot >= 3:
+            time_name = "Late Night" if time_slot == 4 else "Night"
+            risk_score += 30
+            details.append(f"Transaction at {time_name} (exploiting vulnerable hours)")
+        
+        # Check amount
+        if amount > 20000:
+            risk_score += 25
+            details.append(f"High amount: ₹{amount:,.0f}")
+        elif amount > 10000:
+            risk_score += 15
+            details.append(f"Significant amount: ₹{amount:,.0f}")
+        
+        # Combine vulnerability factors
+        if vulnerability_factors:
+            details.insert(0, " + ".join(vulnerability_factors))
+        
+        # Pattern detected if:
+        # 1. User is vulnerable (rural OR first-time)
+        # 2. Transaction is at night
+        # 3. Amount is significant
+        is_vulnerable = (is_rural == 1 or is_first_time == 1 or account_age < 90)
+        is_night = time_slot >= 3
+        is_significant_amount = amount > 10000
+        
+        is_detected = is_vulnerable and is_night and is_significant_amount
+        
+        if is_detected:
+            return True, risk_score, " | ".join(details)
+        else:
+            return False, risk_score, "No vulnerable user night pattern detected"
     
     def calculate_vulnerability_score(self, transaction_data):
         """Calculate vulnerability score (0-100) based on risk factors"""
