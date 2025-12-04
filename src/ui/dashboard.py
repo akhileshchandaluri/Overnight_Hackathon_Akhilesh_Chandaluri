@@ -19,94 +19,95 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Stripe-inspired CSS
+# Professional corporate CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #f8fafc;
         padding: 2rem 3rem;
     }
     
-    /* Sidebar with gradient */
+    /* Sidebar with professional dark navy */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0A2540 0%, #1e3a5f 100%);
+        background: #1e293b;
         border-right: none;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
     }
     
     [data-testid="stSidebar"] h3 {
-        color: #FFFFFF;
-        font-weight: 600;
-        font-size: 13px;
+        color: #f1f5f9;
+        font-weight: 700;
+        font-size: 14px;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         margin-bottom: 1.5rem;
     }
     
-    /* Animated gradient buttons */
+    [data-testid="stSidebar"] label {
+        color: #cbd5e1 !important;
+    }
+    
+    /* Professional gradient buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
         background-size: 200% 200%;
-        animation: gradientShift 3s ease infinite;
         color: white;
         border: none;
         border-radius: 8px;
-        font-weight: 600;
-        padding: 14px 28px;
+        font-weight: 700;
+        padding: 16px 32px;
         font-size: 15px;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+        letter-spacing: 0.02em;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     }
     
     .stButton > button:active {
         transform: translateY(0) scale(0.98);
     }
     
-    /* Glass morphism inputs */
+    /* Clean modern inputs */
     .stNumberInput > div > div > input,
+    .stTextInput > div > div > input,
     .stSelectbox > div > div {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(99, 91, 255, 0.2);
-        border-radius: 10px;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
         padding: 12px 16px;
         font-size: 15px;
+        font-weight: 500;
+        color: #1e293b;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
     .stNumberInput > div > div > input:focus,
+    .stTextInput > div > div > input:focus,
     .stSelectbox > div > div:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
-        transform: translateY(-1px);
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
     }
     
-    /* Animated labels */
+    /* Modern labels */
     label {
-        color: #0A2540 !important;
+        color: #334155 !important;
         font-weight: 600 !important;
         font-size: 14px !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.02em;
+        margin-bottom: 8px !important;
     }
     
     /* Hide Streamlit branding */
@@ -186,61 +187,58 @@ st.markdown("""
                     0 0 60px rgba(102, 126, 234, 0.2);
     }
     
-    /* Scrollbar styling */
+    /* Clean scrollbar */
     ::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }
     
     ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 10px;
+        background: #f1f5f9;
+        border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 10px;
+        background: #cbd5e1;
+        border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2, #667eea);
+        background: #94a3b8;
     }
     
-    /* Better select dropdown styling */
+    /* Professional select dropdown */
     .stSelectbox > div > div > div {
-        background: rgba(255, 255, 255, 0.9) !important;
-        backdrop-filter: blur(10px);
-        color: #0A2540 !important;
+        background: white !important;
+        color: #1e293b !important;
         font-weight: 500;
     }
     
     .stSelectbox [data-baseweb="select"] > div {
-        background: rgba(255, 255, 255, 0.9) !important;
-        color: #0A2540 !important;
+        background: white !important;
+        color: #1e293b !important;
     }
     
-    /* Selected option visibility */
     .stSelectbox [role="button"] {
-        color: #0A2540 !important;
+        color: #1e293b !important;
         font-weight: 600 !important;
     }
     
-    /* Dropdown menu items */
     [data-baseweb="menu"] {
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(20px);
-        border-radius: 10px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        background: white !important;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border: 1px solid #e2e8f0;
     }
     
     [data-baseweb="menu"] > ul > li {
-        color: #0A2540 !important;
+        color: #334155 !important;
         font-weight: 500;
         padding: 12px 16px;
     }
     
     [data-baseweb="menu"] > ul > li:hover {
-        background: linear-gradient(135deg, #667eea15, #764ba215) !important;
+        background: #f1f5f9 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -254,44 +252,44 @@ def load_predictor():
         return None
 
 def main():
-    # Animated Header with Gradient
+    # Professional Header
     st.markdown("""
         <div style='text-align: center; margin-bottom: 3rem; animation: fadeInUp 0.8s ease-out;'>
-            <h1 class='gradient-text' style='font-size: 56px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.03em;'>
-                UPI Fraud Detection
+            <h1 style='font-size: 48px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em; color: #0f172a;'>
+                🛡️ UPI Fraud Detection System
             </h1>
-            <p style='font-size: 20px; color: #425466; font-weight: 400; animation: fadeInUp 1s ease-out;'>
-                Powered by advanced machine learning algorithms
+            <p style='font-size: 18px; color: #475569; font-weight: 500; animation: fadeInUp 1s ease-out;'>
+                Advanced Machine Learning-Powered Transaction Security
             </p>
             <div style='margin-top: 24px; animation: fadeInUp 1.2s ease-out;'>
-                <span style='display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; margin: 0 8px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);'>
+                <span style='display: inline-block; background: #2563eb; color: white; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; margin: 0 6px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); letter-spacing: 0.02em;'>
                     ⚡ Real-time Analysis
                 </span>
-                <span style='display: inline-block; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; margin: 0 8px; box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);'>
-                    🛡️ 95%+ Accuracy
+                <span style='display: inline-block; background: #16a34a; color: white; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; margin: 0 6px; box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2); letter-spacing: 0.02em;'>
+                    🎯 95%+ Accuracy
                 </span>
-                <span style='display: inline-block; background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; margin: 0 8px; box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);'>
-                    🚀 AI-Powered
+                <span style='display: inline-block; background: #9333ea; color: white; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; margin: 0 6px; box-shadow: 0 2px 8px rgba(147, 51, 234, 0.2); letter-spacing: 0.02em;'>
+                    🤖 AI-Powered
                 </span>
             </div>
         </div>
     """, unsafe_allow_html=True)
     
-    # Animated Sidebar
+    # Animated Sidebar with professional colors
     with st.sidebar:
-        st.markdown("### 🎯 Risk Levels")
+        st.markdown("### 📊 RISK LEVELS")
         st.markdown("""
-            <div style='margin: 1rem 0; padding: 16px; background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); border-radius: 12px; box-shadow: 0 4px 15px rgba(150, 230, 161, 0.3); transition: all 0.3s ease;' class='glow-on-hover'>
-                <div style='font-weight: 700; color: #0A2540; font-size: 16px;'>✅ LOW RISK</div>
-                <div style='color: #0A2540; font-size: 13px; margin-top: 6px; opacity: 0.8;'>< 30% probability</div>
+            <div style='margin: 1rem 0; padding: 16px; background: #dcfce7; border-radius: 8px; border-left: 4px solid #16a34a; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);'>
+                <div style='font-weight: 700; color: #15803d; font-size: 15px;'>✅ LOW RISK</div>
+                <div style='color: #15803d; font-size: 13px; margin-top: 6px; opacity: 0.9;'>< 30% probability</div>
             </div>
-            <div style='margin: 1rem 0; padding: 16px; background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border-radius: 12px; box-shadow: 0 4px 15px rgba(253, 203, 110, 0.3); transition: all 0.3s ease;' class='glow-on-hover'>
-                <div style='font-weight: 700; color: #0A2540; font-size: 16px;'>⚠️ MEDIUM RISK</div>
-                <div style='color: #0A2540; font-size: 13px; margin-top: 6px; opacity: 0.8;'>30-55% probability</div>
+            <div style='margin: 1rem 0; padding: 16px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);'>
+                <div style='font-weight: 700; color: #b45309; font-size: 15px;'>⚠️ MEDIUM RISK</div>
+                <div style='color: #b45309; font-size: 13px; margin-top: 6px; opacity: 0.9;'>30-55% probability</div>
             </div>
-            <div style='margin: 1rem 0; padding: 16px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); border-radius: 12px; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); transition: all 0.3s ease;' class='glow-on-hover'>
-                <div style='font-weight: 700; color: white; font-size: 16px;'>🚫 HIGH RISK</div>
-                <div style='color: white; font-size: 13px; margin-top: 6px; opacity: 0.9;'>> 55% probability</div>
+            <div style='margin: 1rem 0; padding: 16px; background: #fee2e2; border-radius: 8px; border-left: 4px solid #dc2626; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);'>
+                <div style='font-weight: 700; color: #991b1b; font-size: 15px;'>🚫 HIGH RISK</div>
+                <div style='color: #991b1b; font-size: 13px; margin-top: 6px; opacity: 0.9;'>> 55% probability</div>
             </div>
         """, unsafe_allow_html=True)
     
@@ -301,10 +299,10 @@ def main():
         st.error("Failed to load model")
         return
     
-    # Input Section with Glass Card
+    # Input Section with clean card
     st.markdown("""
-        <div style='background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-radius: 20px; padding: 32px; margin-bottom: 32px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);'>
-            <h3 style='color: #0A2540; font-weight: 700; margin-bottom: 24px; font-size: 24px;'>
+        <div style='background: white; border-radius: 12px; padding: 32px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0;'>
+            <h3 style='color: #0f172a; font-weight: 700; margin-bottom: 24px; font-size: 22px;'>
                 📝 Transaction Details
             </h3>
         </div>
@@ -327,6 +325,7 @@ def main():
         beneficiary_trust_score = st.number_input("Beneficiary Trust Score", 0.0, 1.0, 0.5, 0.05)
         device_age_days = st.number_input("Device Age (days)", 0, 3000, 180)
         account_age_days = st.number_input("Account Age (days)", 0, 5000, 365)
+        device_id = st.text_input("Device ID", value="DEV12345", help="Used to detect verification attacks")
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -347,7 +346,8 @@ def main():
                 'beneficiary_trust_score': float(beneficiary_trust_score),
                 'device_age_days': int(device_age_days),
                 'account_age_days': int(account_age_days),
-                'is_rural_user': int(is_rural_user)
+                'is_rural_user': int(is_rural_user),
+                'device_id': str(device_id)
             }
             
             # Predict
@@ -360,8 +360,8 @@ def main():
             # Animated Results Header
             st.markdown("""
                 <div style='text-align: center; margin-bottom: 32px; animation: fadeInUp 0.5s ease-out;'>
-                    <h2 style='font-size: 32px; font-weight: 700; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>
-                        Analysis Results
+                    <h2 style='font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: -0.01em;'>
+                        📊 Analysis Results
                     </h2>
                 </div>
             """, unsafe_allow_html=True)
@@ -388,30 +388,30 @@ def main():
                 profile_desc = "Standard profile: Normal activity patterns"
             
             st.markdown(f"""
-                <div style='background: linear-gradient(135deg, {profile_color}15, {profile_color}25); border-left: 6px solid {profile_color}; border-radius: 12px; padding: 20px; margin-bottom: 24px; animation: fadeInUp 0.5s ease-out;'>
+                <div style='background: white; border-left: 4px solid {profile_color}; border-radius: 8px; padding: 24px; margin-bottom: 24px; animation: fadeInUp 0.5s ease-out; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0;'>
                     <div style='display: flex; justify-content: space-between; align-items: center;'>
                         <div style='flex: 1;'>
-                            <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;'>User Vulnerability Profile</div>
-                            <div style='font-size: 24px; font-weight: 800; color: {profile_color}; margin-bottom: 6px;'>{profile_type}</div>
-                            <div style='font-size: 14px; color: #425466; line-height: 1.5;'>{profile_desc}</div>
+                            <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;'>User Vulnerability Profile</div>
+                            <div style='font-size: 22px; font-weight: 800; color: {profile_color}; margin-bottom: 8px;'>{profile_type}</div>
+                            <div style='font-size: 14px; color: #475569; line-height: 1.5;'>{profile_desc}</div>
                         </div>
                         <div style='text-align: center; padding: 0 24px; border-left: 2px solid {profile_color}40;'>
-                            <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;'>Vulnerability Score</div>
-                            <div style='font-size: 42px; font-weight: 800; color: {profile_color};'>{vuln_score}</div>
+                            <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;'>Vulnerability Score</div>
+                            <div style='font-size: 40px; font-weight: 800; color: {profile_color};'>{vuln_score}</div>
                             <div style='font-size: 12px; color: #64748b; font-weight: 600;'>/ 100</div>
                         </div>
                     </div>
-                    <div style='margin-top: 16px; width: 100%; height: 10px; background: rgba(0,0,0,0.08); border-radius: 5px; overflow: hidden;'>
-                        <div style='width: {vuln_score}%; height: 100%; background: linear-gradient(90deg, {profile_color}, {profile_color}dd); animation: slideRight 1.2s ease-out;'></div>
+                    <div style='margin-top: 18px; width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;'>
+                        <div style='width: {vuln_score}%; height: 100%; background: {profile_color}; animation: slideRight 1.2s ease-out;'></div>
                     </div>
                 </div>
             """, unsafe_allow_html=True)
             
-            # Pattern Alerts (NEW!)
+            # Pattern Alerts
             if 'pattern_alerts' in result and len(result['pattern_alerts']) > 0:
                 st.markdown("""
                     <div style='text-align: center; margin: 24px 0 16px 0;'>
-                        <h3 style='font-size: 22px; font-weight: 700; color: #dc2626;'>
+                        <h3 style='font-size: 22px; font-weight: 800; color: #991b1b;'>
                             🚨 Pattern Alerts Detected
                         </h3>
                     </div>
@@ -420,29 +420,30 @@ def main():
                 for alert in result['pattern_alerts']:
                     severity_colors = {
                         'CRITICAL': ('#dc2626', '#fee2e2'),
-                        'HIGH': ('#ef4444', '#fef2f2'),
-                        'MEDIUM': ('#f59e0b', '#fef3c7')
+                        'HIGH': ('#f97316', '#ffedd5'),
+                        'MEDIUM': ('#3b82f6', '#dbeafe')
                     }
                     alert_color, alert_bg = severity_colors.get(alert['severity'], ('#6b7280', '#f3f4f6'))
                     
                     pattern_names = {
+                        'verification_attack': '🎯 Verification Attack',
                         'rapid_switching': '👥 Rapid Beneficiary Switching',
                         'vulnerable_user_night': '🌙 Vulnerable User Night Transaction'
                     }
                     pattern_name = pattern_names.get(alert['pattern'], alert['pattern'])
                     
                     st.markdown(f"""
-                        <div style='background: linear-gradient(135deg, {alert_bg}, {alert_color}15); border-left: 6px solid {alert_color}; border-radius: 12px; padding: 20px; margin-bottom: 16px; animation: pulse 2s ease-in-out infinite;'>
+                        <div style='background: white; border-left: 4px solid {alert_color}; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0;'>
                             <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;'>
-                                <h4 style='color: {alert_color}; margin: 0; font-size: 18px; font-weight: 800;'>{pattern_name}</h4>
-                                <span style='background: {alert_color}; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase;'>{alert['severity']}</span>
+                                <h4 style='color: #0f172a; margin: 0; font-size: 17px; font-weight: 800;'>{pattern_name}</h4>
+                                <span style='background: {alert_color}; color: white; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;'>{alert['severity']}</span>
                             </div>
-                            <p style='color: #0A2540; font-size: 15px; margin: 0 0 10px 0; line-height: 1.6;'>{alert['details']}</p>
+                            <p style='color: #475569; font-size: 14px; margin: 0 0 12px 0; line-height: 1.6;'>{alert['details']}</p>
                             <div style='display: flex; align-items: center; gap: 12px;'>
-                                <div style='flex: 1; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;'>
-                                    <div style='width: {alert['score']}%; height: 100%; background: linear-gradient(90deg, {alert_color}, {alert_color}dd); animation: slideRight 1s ease-out;'></div>
+                                <div style='flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;'>
+                                    <div style='width: {alert['score']}%; height: 100%; background: {alert_color}; animation: slideRight 1s ease-out;'></div>
                                 </div>
-                                <span style='font-size: 16px; font-weight: 800; color: {alert_color};'>{alert['score']}</span>
+                                <span style='font-size: 15px; font-weight: 800; color: {alert_color};'>{alert['score']}</span>
                             </div>
                         </div>
                     """, unsafe_allow_html=True)
@@ -452,13 +453,13 @@ def main():
             
             # Fraud Probability Metric
             with metric_col1:
-                color = '#10b981' if risk == 'LOW' else ('#f59e0b' if risk == 'MEDIUM' else '#ef4444')
+                color = '#16a34a' if risk == 'LOW' else ('#f59e0b' if risk == 'MEDIUM' else '#dc2626')
                 st.markdown(f"""
-                    <div style='background: linear-gradient(135deg, {color}20, {color}40); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 24px {color}30; animation: fadeInUp 0.6s ease-out; border: 2px solid {color};'>
-                        <div style='font-size: 11px; color: #425466; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;'>Fraud Probability</div>
-                        <div style='font-size: 36px; font-weight: 800; color: {color}; margin-bottom: 6px;'>{prob*100:.1f}%</div>
-                        <div style='width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; margin-top: 10px;'>
-                            <div style='width: {prob*100}%; height: 100%; background: linear-gradient(90deg, {color}, {color}dd); animation: slideRight 1s ease-out;'></div>
+                    <div style='background: white; border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); animation: fadeInUp 0.6s ease-out; border: 2px solid {color}; border-left: 4px solid {color};'>
+                        <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;'>Fraud Probability</div>
+                        <div style='font-size: 32px; font-weight: 800; color: {color}; margin-bottom: 8px;'>{prob*100:.1f}%</div>
+                        <div style='width: 100%; height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin-top: 12px;'>
+                            <div style='width: {prob*100}%; height: 100%; background: {color}; animation: slideRight 1s ease-out;'></div>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
@@ -467,10 +468,10 @@ def main():
             with metric_col2:
                 risk_icons = {'LOW': '✅', 'MEDIUM': '⚠️', 'HIGH': '🚫'}
                 st.markdown(f"""
-                    <div style='background: linear-gradient(135deg, {color}20, {color}40); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 24px {color}30; animation: fadeInUp 0.7s ease-out; border: 2px solid {color};'>
-                        <div style='font-size: 11px; color: #425466; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;'>Risk Level</div>
-                        <div style='font-size: 36px; margin-bottom: 6px;'>{risk_icons[risk]}</div>
-                        <div style='font-size: 20px; font-weight: 800; color: {color};'>{risk}</div>
+                    <div style='background: white; border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); animation: fadeInUp 0.7s ease-out; border: 2px solid {color}; border-left: 4px solid {color};'>
+                        <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;'>Risk Level</div>
+                        <div style='font-size: 32px; margin-bottom: 8px;'>{risk_icons[risk]}</div>
+                        <div style='font-size: 18px; font-weight: 800; color: {color};'>{risk}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
@@ -478,14 +479,14 @@ def main():
             with metric_col3:
                 decision_icons = {'ALLOW': '✓', 'WARN': '!', 'BLOCK': '✗'}
                 st.markdown(f"""
-                    <div style='background: linear-gradient(135deg, {color}20, {color}40); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 24px {color}30; animation: fadeInUp 0.8s ease-out; border: 2px solid {color};'>
-                        <div style='font-size: 11px; color: #425466; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;'>Decision</div>
-                        <div style='font-size: 36px; font-weight: 800; color: {color}; margin-bottom: 6px;'>{decision_icons.get(result['decision'], '?')}</div>
-                        <div style='font-size: 18px; font-weight: 700; color: {color};'>{result['decision']}</div>
+                    <div style='background: white; border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); animation: fadeInUp 0.8s ease-out; border: 2px solid {color}; border-left: 4px solid {color};'>
+                        <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;'>Decision</div>
+                        <div style='font-size: 32px; font-weight: 800; color: {color}; margin-bottom: 8px;'>{decision_icons.get(result['decision'], '?')}</div>
+                        <div style='font-size: 16px; font-weight: 700; color: {color};'>{result['decision']}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
-            # Fraud Type Metric (NEW!)
+            # Fraud Type Metric
             with metric_col4:
                 fraud_type = result['fraud_type']
                 fraud_type_icons = {
@@ -502,12 +503,12 @@ def main():
                     'night_rush': 'Night Rush',
                     'multiple_new': 'Multi-Beneficiary'
                 }
-                fraud_type_color = '#10b981' if fraud_type == 'legitimate' else '#dc2626'
+                fraud_type_color = '#16a34a' if fraud_type == 'legitimate' else '#dc2626'
                 st.markdown(f"""
-                    <div style='background: linear-gradient(135deg, {fraud_type_color}20, {fraud_type_color}40); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 24px {fraud_type_color}30; animation: fadeInUp 0.9s ease-out; border: 2px solid {fraud_type_color};'>
-                        <div style='font-size: 11px; color: #425466; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;'>Fraud Type</div>
-                        <div style='font-size: 36px; margin-bottom: 6px;'>{fraud_type_icons.get(fraud_type, '❓')}</div>
-                        <div style='font-size: 13px; font-weight: 700; color: {fraud_type_color};'>{fraud_type_names.get(fraud_type, fraud_type)}</div>
+                    <div style='background: white; border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); animation: fadeInUp 0.9s ease-out; border: 2px solid {fraud_type_color}; border-left: 4px solid {fraud_type_color};'>
+                        <div style='font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;'>Fraud Type</div>
+                        <div style='font-size: 32px; margin-bottom: 8px;'>{fraud_type_icons.get(fraud_type, '❓')}</div>
+                        <div style='font-size: 13px; font-weight: 800; color: {fraud_type_color};'>{fraud_type_names.get(fraud_type, fraud_type)}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
@@ -524,20 +525,20 @@ def main():
                     },
                     'new_device': {
                         'title': '📱 New Device Attack',
-                        'description': 'Transaction initiated from unrecognized device. Common in device takeover scams where fraudster gains access to user\'s UPI credentials.',
+                        'description': 'Transaction initiated from unrecognized device. Common in device takeover scams where fraudster gains access to UPI credentials.',
                         'indicators': ['First-time device usage', 'Device age < 30 days', 'Small verification transaction detected', 'Credential compromise suspected'],
                         'action': 'Send OTP to registered mobile. Verify device through trusted channel. Consider blocking until device is verified.'
                     },
                     'night_rush': {
                         'title': '🌙 Night Rush Attack',
-                        'description': 'Rapid transactions during unusual hours (Night/Late Night). Fraudsters exploit victim\'s sleep time or create urgency through fake emergency calls.',
-                        'indicators': ['Transaction at Night/Late Night', 'Multiple rapid transactions (>5 in 1 hour)', 'High transaction frequency in 24h', 'Time-based exploitation'],
+                        'description': 'Rapid transactions during unusual hours. Fraudsters exploit victim sleep time or create urgency through fake emergency calls.',
+                        'indicators': ['Transaction at Night/Late Night', 'Multiple rapid transactions', 'High transaction frequency in 24h', 'Time-based exploitation'],
                         'action': 'Flag for immediate review. Contact user to confirm transaction legitimacy. Consider transaction limits during night hours.'
                     },
                     'multiple_new': {
                         'title': '👥 Multiple Beneficiary Attack',
-                        'description': 'Rapidly switching between new beneficiaries. Classic pattern in scams where fraudster directs victim to send money to multiple "mule" accounts.',
-                        'indicators': ['New beneficiary added', 'High beneficiary change velocity (>5)', 'Low beneficiary trust score (<0.3)', 'Money mule network suspected'],
+                        'description': 'Rapidly switching between new beneficiaries. Classic pattern in scams where fraudster directs victim to send money to multiple mule accounts.',
+                        'indicators': ['New beneficiary added', 'High beneficiary change velocity', 'Low beneficiary trust score', 'Money mule network suspected'],
                         'action': 'Block transaction. Verify all new beneficiaries. Check if user is being manipulated through social engineering.'
                     }
                 }
@@ -545,33 +546,24 @@ def main():
                 if fraud_type in fraud_explanations:
                     exp = fraud_explanations[fraud_type]
                     
-                    # Build the card HTML
-                    card_html = f"""
-                    <div style='background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.12)); border-left: 6px solid #dc2626; border-radius: 12px; padding: 24px; margin-bottom: 24px; animation: fadeInUp 1s ease-out;'>
-                        <h3 style='color: #dc2626; margin: 0 0 12px 0; font-size: 20px; font-weight: 800;'>{exp['title']}</h3>
-                        <p style='color: #0A2540; font-size: 15px; line-height: 1.7; margin: 0 0 16px 0;'>{exp['description']}</p>
-                        
-                        <div style='background: rgba(255, 255, 255, 0.6); border-radius: 8px; padding: 16px; margin-bottom: 12px;'>
-                            <div style='font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;'>🔍 Key Indicators Detected:</div>
-                            <ul style='margin: 0; padding-left: 20px; color: #425466; font-size: 14px; line-height: 1.8;'>
-                    """
-                    
-                    # Add indicators
-                    for ind in exp['indicators']:
-                        card_html += f"<li>{ind}</li>"
-                    
-                    card_html += f"""
-                            </ul>
+                    st.markdown(f"""
+                        <div style='background: linear-gradient(135deg, #ffffff, #f8f9fa); border-left: 4px solid #dc2626; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);'>
+                            <h3 style='color: #1a1a1a; margin: 0 0 10px 0; font-size: 18px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;'>{exp['title']}</h3>
+                            <p style='color: #4a5568; margin: 0; font-size: 14px; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;'>{exp['description']}</p>
                         </div>
-                        
-                        <div style='background: rgba(220, 38, 38, 0.1); border-radius: 8px; padding: 16px; border: 1px solid rgba(220, 38, 38, 0.3);'>
-                            <div style='font-size: 12px; color: #dc2626; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>⚡ Recommended Action:</div>
-                            <p style='margin: 0; color: #0A2540; font-size: 14px; line-height: 1.6; font-weight: 500;'>{exp['action']}</p>
-                        </div>
-                    </div>
-                    """
+                    """, unsafe_allow_html=True)
                     
-                    st.markdown(card_html, unsafe_allow_html=True)
+                    # Use Streamlit expander for details
+                    with st.expander("🔍 View Detailed Analysis", expanded=True):
+                        st.markdown("<div style='font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;'>", unsafe_allow_html=True)
+                        st.markdown("**Key Indicators Detected:**")
+                        for ind in exp['indicators']:
+                            st.markdown(f"<span style='color: #2d3748; font-size: 14px;'>• {ind}</span>", unsafe_allow_html=True)
+                        
+                        st.markdown("")
+                        st.markdown(f"**⚡ Recommended Action:**")
+                        st.markdown(f"<div style='background: #f0f9ff; border-left: 3px solid #0284c7; padding: 12px 16px; border-radius: 4px; color: #0c4a6e; font-size: 14px; line-height: 1.5;'>{exp['action']}</div>", unsafe_allow_html=True)
+                        st.markdown("</div>", unsafe_allow_html=True)
             
             # Main Results Display
             col_result1, col_result2 = st.columns([1, 1])
