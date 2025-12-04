@@ -15,10 +15,16 @@ UPI transactions are instant and irreversible. Fraudsters exploit:
 ## 🧠 Key Features
 - **Fraud Probability Score**: ML model gives 0-1 risk probability
 - **Hybrid Detection**: Combines behavioral rules + ML predictions
-- **Real-time Dashboard**: Visual fraud detection interface
-- **Transaction Simulator**: Test with demo transactions
+- **🎨 Modern Dual UI**: Choose between Streamlit or Gradio dashboards
+  - Professional gradient design with animations
+  - Interactive charts and real-time visualizations
+  - Color-coded risk indicators
+  - Batch CSV analysis
+  - One-click demo scenarios
+- **Transaction Simulator**: Test with pre-configured scenarios
 - **Explainability**: Shows why transactions were flagged
 - **Smart Alerts**: Block/Warn/Allow decisions
+- **REST API**: Integration-ready backend
 
 ## 🏗 Architecture
 ```
@@ -38,15 +44,37 @@ python src/data/generate_dataset.py
 python src/models/train_model.py
 ```
 
-### 3. Run Dashboard
+### 3. Launch UI (Choose One)
+
+**🎨 Option 1: Interactive Launcher (Easiest)**
+```bash
+python launch_ui.py
+```
+
+**💎 Option 2: Streamlit Dashboard (Recommended)**
 ```bash
 streamlit run src/ui/dashboard.py
 ```
+- Modern gradient design with animations
+- Interactive charts and real-time analytics
+- Professional styling and color-coding
+- Opens at: `http://localhost:8501`
+
+**🚀 Option 3: Gradio Dashboard (Alternative)**
+```bash
+python src/ui/gradio_dashboard.py
+```
+- Clean, simple interface
+- Quick testing and sharing
+- Mobile-friendly design
+- Opens at: `http://localhost:7860`
 
 ### 4. Run API (Optional)
 ```bash
 python src/api/app.py
 ```
+
+📖 **Detailed UI Guide**: See [UI_GUIDE.md](UI_GUIDE.md) for complete documentation
 
 ## 📊 Dataset Features
 - **amount**: Transaction value in ₹
