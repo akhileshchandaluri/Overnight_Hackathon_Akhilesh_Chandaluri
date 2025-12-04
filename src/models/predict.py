@@ -32,6 +32,10 @@ class FraudPredictor:
         os.makedirs('logs', exist_ok=True)
         self.log_file = 'logs/predictions.log'
         
+        # Transaction history for pattern detection (in-memory for demo)
+        self.transaction_history = []
+        self.max_history_size = 100
+        
         self.load_model()
     
     def load_model(self):
@@ -59,6 +63,9 @@ class FraudPredictor:
             Dict with prediction results
         """
         try:
+            # Store device_id separately (not a model feature)
+            device_id_str = transaction_data.pop('device_id', 'DEV12345')
+            
             # Add default values for missing features (20 base features)
             default_features = {
                 'is_small_verification': 0,
@@ -69,7 +76,7 @@ class FraudPredictor:
                 'upi_pin_failed_attempts': 0,
                 'account_reports': 0,
                 'location': 0,  # Encoded location
-                'device_id': 1234,  # Encoded device_id
+                'device_id': 1234,  # Encoded device_id (numeric for model)
                 'payee_balance_before': 10000.0,
                 'payee_balance_after': 0.0,
             }
@@ -140,12 +147,23 @@ class FraudPredictor:
             # Calculate vulnerability score
             vulnerability_score = self.calculate_vulnerability_score(transaction_data)
             
-            # Detect specific patterns
+            # Detect specific patterns (pass device_id_str separately)
             rapid_switching_detected, rapid_switching_score, rapid_switching_details = self.detect_rapid_switching(transaction_data)
             vulnerable_night_detected, vulnerable_night_score, vulnerable_night_details = self.detect_vulnerable_user_night(transaction_data)
             
+            # Pass device_id separately for verification attack
+            transaction_with_device = {**transaction_data, 'device_id': device_id_str}
+            verification_attack_detected, verification_attack_score, verification_attack_details = self.detect_verification_attack(transaction_with_device)
+            
             # Collect pattern alerts
             pattern_alerts = []
+            if verification_attack_detected:
+                pattern_alerts.append({
+                    'pattern': 'verification_attack',
+                    'severity': 'CRITICAL' if verification_attack_score >= 90 else 'HIGH',
+                    'score': verification_attack_score,
+                    'details': verification_attack_details
+                })
             if rapid_switching_detected:
                 pattern_alerts.append({
                     'pattern': 'rapid_switching',
@@ -183,8 +201,11 @@ class FraudPredictor:
                 'pattern_alerts': pattern_alerts,
                 'balance_changes': balance_change,
                 'location': transaction_data.get('location', 'Unknown'),
-                'device_id': transaction_data.get('device_id', 'Unknown')
+                'device_id': device_id_str
             }
+            
+            # Add to history for future pattern detection
+            self.add_to_history(transaction_with_device)
             
             # Log prediction
             self._log_prediction(transaction_data, result)
@@ -366,6 +387,75 @@ class FraudPredictor:
             return True, risk_score, " | ".join(details)
         else:
             return False, risk_score, "No vulnerable user night pattern detected"
+    
+    def detect_verification_attack(self, transaction_data):
+        """
+        Detect verification attack: small test transaction followed by large fraud
+        Pattern: ₹1-10 test → ₹20k+ fraud within 5-10 minutes
+        Returns: (is_detected: bool, risk_score: int, details: str)
+        """
+        current_amount = transaction_data.get('amount', 0)
+        device_id = transaction_data.get('device_id', 'unknown')
+        is_new_device = transaction_data.get('is_new_device', 0)
+        
+        risk_score = 0
+        details = []
+        
+        # Check if current transaction is large
+        is_large_transaction = current_amount > 20000
+        
+        # Look for small verification transaction in history (same device, within last 10 mins)
+        found_verification = False
+        verification_amount = 0
+        
+        for hist_txn in reversed(self.transaction_history[-20:]):  # Check last 20 transactions
+            # Same device check
+            if hist_txn.get('device_id') == device_id:
+                hist_amount = hist_txn.get('amount', 0)
+                
+                # Found small transaction (₹1-10)
+                if hist_amount <= 10:
+                    found_verification = True
+                    verification_amount = hist_amount
+                    break
+        
+        # Pattern detected: small test + large current
+        if found_verification and is_large_transaction:
+            risk_score = 95  # Critical pattern
+            details.append(f"Test transaction of ₹{verification_amount:.0f} detected")
+            details.append(f"Followed by large transaction: ₹{current_amount:,.0f}")
+            details.append("Classic verification attack pattern")
+            
+            if is_new_device == 1:
+                risk_score = 100
+                details.append("New device used - credential compromise likely")
+            
+            return True, risk_score, " | ".join(details)
+        
+        # Check if current is small (potential verification)
+        elif current_amount <= 10 and is_new_device == 1:
+            risk_score = 60
+            details.append(f"Small amount (₹{current_amount:.0f}) from new device")
+            details.append("Possible verification attempt - monitor next transaction")
+            return True, risk_score, " | ".join(details)
+        
+        return False, 0, "No verification attack pattern detected"
+    
+    def add_to_history(self, transaction_data):
+        """Add transaction to history for pattern detection"""
+        # Keep only essential fields for history
+        hist_entry = {
+            'amount': transaction_data.get('amount', 0),
+            'device_id': transaction_data.get('device_id', 'unknown'),
+            'timestamp': datetime.now().isoformat(),
+            'is_new_device': transaction_data.get('is_new_device', 0)
+        }
+        
+        self.transaction_history.append(hist_entry)
+        
+        # Keep history size manageable
+        if len(self.transaction_history) > self.max_history_size:
+            self.transaction_history.pop(0)
     
     def calculate_vulnerability_score(self, transaction_data):
         """Calculate vulnerability score (0-100) based on risk factors"""
