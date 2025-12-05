@@ -10,6 +10,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models.predict import FraudPredictor
+from models.message_filter import MessageFilter
 
 # Page config
 st.set_page_config(
@@ -251,6 +252,10 @@ def load_predictor():
         st.error(f"Error loading model: {e}")
         return None
 
+@st.cache_resource
+def load_message_filter():
+    return MessageFilter()
+
 def main():
     # Professional Header
     st.markdown("""
@@ -259,7 +264,7 @@ def main():
                 🛡️ UPI Fraud Detection System
             </h1>
             <p style='font-size: 18px; color: #475569; font-weight: 500; animation: fadeInUp 1s ease-out;'>
-                Advanced Machine Learning-Powered Transaction Security
+                Advanced Machine Learning-Powered Transaction Security with Message Filtering
             </p>
             <div style='margin-top: 24px; animation: fadeInUp 1.2s ease-out;'>
                 <span style='display: inline-block; background: #2563eb; color: white; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; margin: 0 6px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); letter-spacing: 0.02em;'>
@@ -293,11 +298,86 @@ def main():
             </div>
         """, unsafe_allow_html=True)
     
-    # Load model
+    # Load models
     predictor = load_predictor()
+    message_filter = load_message_filter()
+    
     if not predictor:
         st.error("Failed to load model")
         return
+    
+    # Message Filter Section (Optional)
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #ede9fe, #f3e8ff); border-left: 4px solid #9333ea; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);'>
+            <h3 style='color: #0f172a; font-weight: 700; margin-bottom: 10px; font-size: 20px;'>
+                💬 Message Filter (Optional)
+            </h3>
+            <p style='color: #475569; font-size: 14px; margin: 0;'>
+                Check SMS/messages for fraud indicators before proceeding with transaction
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    message_input = st.text_area(
+        "Enter Message (SMS/WhatsApp/Email) - Optional",
+        placeholder="Example: 'Dear customer, your account will be blocked. Please verify KYC by clicking: bit.ly/xyz123'",
+        height=100,
+        help="Paste suspicious messages here to check for fraud patterns. Leave empty to skip."
+    )
+    
+    message_analysis = None
+    message_blocked = False
+    
+    if message_input and message_input.strip():
+        with st.spinner("Analyzing message..."):
+            message_analysis = message_filter.analyze_message(message_input)
+            fraud_type = message_filter.get_fraud_type(message_input)
+            
+            # Display message analysis
+            risk_colors = {
+                'HIGH': '#dc2626',
+                'MEDIUM': '#f59e0b',
+                'LOW': '#16a34a',
+                'NONE': '#64748b'
+            }
+            msg_color = risk_colors.get(message_analysis['risk_level'], '#64748b')
+            
+            st.markdown(f"""
+                <div style='background: white; border-left: 4px solid {msg_color}; border-radius: 8px; padding: 20px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0;'>
+                    <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;'>
+                        <h4 style='color: #0f172a; margin: 0; font-size: 18px; font-weight: 800;'>Message Analysis Result</h4>
+                        <span style='background: {msg_color}; color: white; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;'>{message_analysis['risk_level']} RISK</span>
+                    </div>
+                    <div style='margin: 12px 0;'>
+                        <div style='font-size: 13px; color: #64748b; font-weight: 700; margin-bottom: 6px;'>FRAUD SCORE: <span style='color: {msg_color}; font-size: 20px; font-weight: 800;'>{message_analysis['fraud_score']}/100</span></div>
+                        <div style='width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;'>
+                            <div style='width: {message_analysis['fraud_score']}%; height: 100%; background: {msg_color};'></div>
+                        </div>
+                    </div>
+                    <div style='margin: 12px 0;'>
+                        <div style='font-size: 13px; color: #64748b; font-weight: 700; margin-bottom: 8px;'>DETECTED FRAUD TYPE:</div>
+                        <div style='color: #0f172a; font-size: 15px; font-weight: 700;'>🎯 {fraud_type}</div>
+                    </div>
+                    <div style='margin: 12px 0;'>
+                        <div style='font-size: 13px; color: #64748b; font-weight: 700; margin-bottom: 8px;'>FLAGS DETECTED:</div>
+            """, unsafe_allow_html=True)
+            
+            for flag in message_analysis['flags']:
+                st.markdown(f"<div style='color: #475569; font-size: 14px; margin: 4px 0;'>• {flag}</div>", unsafe_allow_html=True)
+            
+            st.markdown(f"""
+                    </div>
+                    <div style='background: {"#fee2e2" if message_analysis["risk_level"] == "HIGH" else "#fef3c7" if message_analysis["risk_level"] == "MEDIUM" else "#dcfce7"}; border-left: 3px solid {msg_color}; padding: 12px 16px; border-radius: 4px; margin-top: 12px;'>
+                        <div style='font-size: 13px; color: #64748b; font-weight: 700; margin-bottom: 6px;'>RECOMMENDATION:</div>
+                        <div style='color: #0f172a; font-size: 14px; font-weight: 600; line-height: 1.5;'>{message_analysis['recommendation']}</div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            if not message_analysis['can_proceed']:
+                message_blocked = True
+                st.error("⚠️ **HIGH RISK MESSAGE DETECTED!** Transaction analysis is blocked. Do not proceed with this transaction.")
+                st.stop()
     
     # Input Section with clean card
     st.markdown("""
