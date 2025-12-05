@@ -155,7 +155,7 @@ for test in test_cases:
     # Update with test data
     test_features.update(test['data'])
     
-    # Calculate risk features
+    # Calculate risk features (matching training features)
     test_features['night_risk'] = (test_features['time_slot'] >= 2) * 2
     test_features['new_device_risk'] = test_features['is_new_device'] * 3
     test_features['high_amount_risk'] = (test_features['amount'] > 20000) * 2
@@ -167,6 +167,7 @@ for test in test_cases:
     test_features['low_trust_risk'] = (test_features['beneficiary_trust_score'] < 0.3) * 2
     test_features['rapid_trans_risk'] = (test_features['rapid_transactions_1h'] > 10) * 2
     test_features['pin_failure_risk'] = (test_features['upi_pin_failed_attempts'] > 0) * 2
+    test_features['velocity_risk'] = (test_features['beneficiary_change_velocity'] > 5) * 1.5
     
     test_df = pd.DataFrame([test_features])
     test_df = test_df[all_features]  # Ensure correct order
