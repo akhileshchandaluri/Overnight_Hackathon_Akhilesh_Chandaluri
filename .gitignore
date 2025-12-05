@@ -41,10 +41,10 @@ wheels/
 data/raw/*.csv
 data/processed/*.csv
 
-# Models (too large for git)
-models/*.pkl
-models/*.joblib
-models/*.h5
+# Models - Allow small models for deployment
+# models/*.pkl
+# models/*.joblib
+# models/*.h5
 
 # Checkpoint/submission files
 *CHECKPOINT*.md
